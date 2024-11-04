@@ -51,10 +51,10 @@ version: "3.9"
 services:
   frigate:
     container_name: frigate
-    image: blakeblackshear/frigate:stable
+    image: blakeblackshear/frigate:0.11.1
     privileged: true
     restart: unless-stopped
-    shm_size: "64mb"
+    shm_size: "256mb"
     volumes:
       - /dev/bus/usb:/dev/bus/usb
       - /etc/localtime:/etc/localtime:ro
@@ -72,14 +72,19 @@ services:
       - FRIGATE_RTSP_PASSWORD=twoje_haslo_do_rtsp
 EOL
 
-# Ustawienie uprawnień do katalogów
+# Ustawienie uprawnień do katalogów i plików
 echo "=== Ustawianie uprawnień do katalogów ==="
 chown -R $USER:$USER /opt/frigate
+chmod -R 755 /opt/frigate
 
 # Przechodzenie do katalogu i uruchomienie kontenera Frigate
 echo "=== Uruchamianie Frigate ==="
 cd /opt/frigate
 docker-compose up -d
+
+# Sprawdzenie statusu kontenera
+echo "=== Sprawdzanie statusu kontenera ==="
+docker ps | grep frigate
 
 # Wyświetlenie podsumowania
 echo
