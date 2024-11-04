@@ -1,0 +1,46 @@
+mqtt:
+  host: 192.168.0.10           # Adres IP serwera MQTT
+  port: 1883                   # Port MQTT (standardowo 1883)
+  topic_prefix: frigate        # Prefix dla tematów MQTT
+  client_id: frigate           # Identyfikator klienta MQTT
+  user: mqtt_user              # Użytkownik MQTT (jeśli wymagany)
+  password: mqtt_password      # Hasło MQTT (jeśli wymagane)
+
+detectors:
+  cpu1:
+    type: cpu                  # Użycie CPU do detekcji. Wydajniejsze alternatywy to Coral TPU.
+
+cameras:
+  kamera_1:                    # Nazwa kamery (będzie widoczna w UI)
+    ffmpeg:
+      inputs:
+        - path: rtsp://user:passk@192.168.0.141:544/stream1  # URL RTSP kamery
+          roles:
+            - detect           # Użyj tego strumienia do detekcji
+            - rtmp             # Użyj tego strumienia do przekazu RTMP
+    detect:
+      width: 1920              # Szerokość obrazu (musi zgadzać się z rozdzielczością kamery)
+      height: 1080             # Wysokość obrazu (musi zgadzać się z rozdzielczością kamery)
+      fps: 5                   # Liczba klatek na sekundę dla detekcji
+    rtmp:
+      enabled: True            # Włącz RTMP dla łatwego podglądu na żywo
+    snapshots:
+      enabled: True            # Włącz zapisywanie zrzutów ekranu (zdjęć)
+      timestamp: True          # Dodaj znacznik czasu na zdjęciach
+      retain:
+        default: 1             # Przechowuj jeden zrzut na wykryte zdarzenie
+    objects:
+      track:
+        - person               # Śledź obiekty typu "person" (możesz dodać więcej, np. "car", "dog")
+    motion:
+      threshold: 25            # Próg ruchu; większa wartość może redukować fałszywe alarmy
+      contour_area: 100        # Minimalny obszar konturu do wykrycia ruchu
+
+record:
+  enabled: True                # Włącz nagrywanie wideo
+  retain_days: 7               # Przechowuj nagrania przez 7 dni
+  events:
+    retain:
+      default: 10              # Przechowuj nagrania zdarzeń przez 10 dni
+    pre_capture: 5             # Zapisz dodatkowe 5 sekund przed wykryciem zdarzenia
+    post_capture: 10           # Zapisz dodatkowe 10 sekund po wykryciu zdarzenia
